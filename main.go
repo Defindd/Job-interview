@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"sync"
 )
 
 type X struct {
@@ -12,24 +13,27 @@ func (x X) outP() {
 	fmt.Println(x.V)
 }
 func main() {
+	mu := sync.Mutex{}
+	wg := sync.WaitGroup{}
+	f := map[int]int{}
+	wg.Add(2)
+	go func() {
+		mu.Lock()
+		defer func() {
+			mu.Unlock()
+			wg.Done()
+		}()
+		f[1] = 2
 
-	var f AB = Foo{}
-	g, ok := f.(BC)
-	_ = g
-	fmt.Println(ok)
-}
-
-type Foo struct{}
-
-func (f Foo) A() {}
-func (f Foo) B() {}
-func (f Foo) C() {}
-
-type AB interface {
-	A()
-	B()
-}
-type BC interface {
-	B()
-	C()
+	}()
+	go func() {
+		mu.Lock()
+		defer func() {
+			mu.Unlock()
+			wg.Done()
+		}()
+		f[1] = 100
+	}()
+	wg.Wait()
+	fmt.Println(f[1])
 }
