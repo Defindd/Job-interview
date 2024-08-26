@@ -5,12 +5,11 @@ import (
 )
 
 func main() {
-	mySlice := make([]int, 0, 4)
-	mySlice = append(mySlice, 1)
-	mySlice = append(mySlice, 2)
-	test(&mySlice)
-	fmt.Println(mySlice)
-}
-func test(sl *[]int) {
-	*sl = append(*sl, 1000)
+	dfas := "qwerty"
+	runeDfas := []rune(dfas)
+	for i := 0; i < len(runeDfas); i++ {
+		fmt.Println('a', 'A')
+		runeDfas[i] += 'A' - 'a'
+	}
+	fmt.Println(string(runeDfas))
 }
