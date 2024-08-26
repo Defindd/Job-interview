@@ -2,7 +2,6 @@ package main
 
 import (
 	"fmt"
-	"sync"
 )
 
 type X struct {
@@ -13,27 +12,11 @@ func (x X) outP() {
 	fmt.Println(x.V)
 }
 func main() {
-	mu := sync.Mutex{}
-	wg := sync.WaitGroup{}
-	f := map[int]int{}
-	wg.Add(2)
-	go func() {
-		mu.Lock()
-		defer func() {
-			mu.Unlock()
-			wg.Done()
-		}()
-		f[1] = 2
+	sl1 := make([]int8, 5, 5)
+	sl2 := make([]int64, 5, 5)
+	sl1 = append(sl1, 1)
+	sl2 = append(sl2, 2)
+	fmt.Println(cap(sl1), cap(sl2)) //16,10-дело в классах и размерах памяти, которое может выделить алокатор памяти в го
+	//https://go.dev/src/runtime/sizeclasses.go
 
-	}()
-	go func() {
-		mu.Lock()
-		defer func() {
-			mu.Unlock()
-			wg.Done()
-		}()
-		f[1] = 100
-	}()
-	wg.Wait()
-	fmt.Println(f[1])
 }
